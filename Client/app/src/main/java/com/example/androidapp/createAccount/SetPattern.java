@@ -35,7 +35,7 @@ public class SetPattern extends AppCompatActivity {
     PatternLockView mPatternLockView;
 
 
-    private PatternLockViewListener mPatternLockViewListener2 = new PatternLockViewListener() {
+    private final PatternLockViewListener mPatternLockViewListener2 = new PatternLockViewListener() {
         @Override
         public void onStarted() {
             Log.d(getClass().getName(), "Pattern drawing started");

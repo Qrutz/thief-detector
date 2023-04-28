@@ -1,5 +1,6 @@
 package com.example.androidapp.Settings;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -11,7 +12,15 @@ import com.andrognito.patternlockview.listener.PatternLockViewListener;
 import com.andrognito.patternlockview.utils.PatternLockUtils;
 import com.example.androidapp.MQTT.MqttHandler;
 import com.example.androidapp.R;
+import com.example.androidapp.dbHandler;
+import io.realm.mongodb.App;
+import io.realm.mongodb.User;
+import io.realm.mongodb.mongo.MongoClient;
+import io.realm.mongodb.mongo.MongoCollection;
+import io.realm.mongodb.mongo.MongoDatabase;
+import org.bson.Document;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ChangePattern extends AppCompatActivity {
@@ -24,10 +33,12 @@ public class ChangePattern extends AppCompatActivity {
     private MqttHandler mqttHandler;
     ImageView backArrow;
     Button SubmitButton;
+    String StoredPattern;
+    List<PatternLockView.Dot> convertPattern;
 
 
     // pattern listener
-    private PatternLockViewListener mPatternLockViewListener = new PatternLockViewListener() {
+    private final PatternLockViewListener mPatternLockViewListener = new PatternLockViewListener() {
         @Override
         public void onStarted() {
             Log.d(getClass().getName(), "Pattern drawing started");
@@ -62,6 +73,28 @@ public class ChangePattern extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.setpattern_layout);
+
+        dbHandler db = new dbHandler(getApplicationContext());
+        App app = db.getApp();
+        User user = app.currentUser();
+
+
+          // get the currently stored pattern
+        StoredPattern = user.getCustomData().get("pattern").toString();
+
+        // convert our string pattern to list of dots
+        convertPattern = new ArrayList<>();
+        for (int i = 0; i < StoredPattern.length(); i++) {
+            int dotId = Character.getNumericValue(StoredPattern.charAt(i));
+            PatternLockView.Dot dot = PatternLockView.Dot.of(dotId);
+            convertPattern.add(dot);
+        }
+
+
+
+
+
+
         mqttHandler = new MqttHandler();
         mqttHandler.connect(BROKER_URL, CLIENT_ID);
 
@@ -71,7 +104,13 @@ public class ChangePattern extends AppCompatActivity {
 
         // pattern listener
         mPatternLockView = (PatternLockView) findViewById(R.id.pattern_lock_view);
+        // set the starting pattern to the currently stored pattern
+        mPatternLockView.setPattern(mPatternLockView.getPatternViewMode(), convertPattern);
         mPatternLockView.addPatternLockListener(mPatternLockViewListener);
+
+
+
+
 
 
         // submit pattern button
@@ -89,6 +128,26 @@ public class ChangePattern extends AppCompatActivity {
             // publish to broker ie save it
             String topic = "SentinelApp/pattern";
             publishPattern(topic, pattern);
+
+            // update db
+            MongoClient mongoClient = user.getMongoClient("mongodb-atlas");
+            MongoDatabase mongoDatabase = mongoClient.getDatabase("SeeedDB");
+            MongoCollection<Document> mongoCollection = mongoDatabase.getCollection("UserData");
+            Document queryFilter = new Document().append("user-id", user.getId());
+            Document updateDocument = new Document().append("$set", new Document().append("pattern", pattern));
+            mongoCollection.updateOne(queryFilter, updateDocument).getAsync(result -> {
+                if (result.isSuccess()) {
+                    Log.v("EXAMPLE", "Updated document");
+                    // invalidate the user object to refresh
+                    user.refreshCustomData();
+                    // go back to settings page
+                    Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
+                    startActivity(intent);
+                } else {
+                    Log.e("EXAMPLE", "Unable to update document. Error: " + result.getError());
+                }
+            });
+
 
             // clear pattern
             mPatternLockView.clearPattern();

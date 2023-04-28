@@ -24,5 +24,6 @@
     <string name="status_armed">Status: Armed</string>
     <string name="create_account">Create Account</string>
     <string name="sign_in">Sign in</string>
+    <string name="change_pattern">Change pattern</string>
 
 </resources>
