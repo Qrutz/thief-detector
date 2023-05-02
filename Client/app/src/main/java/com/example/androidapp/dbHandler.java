@@ -27,6 +27,17 @@ public class dbHandler {
         app = new App(new AppConfiguration.Builder(APP_ID).build());
     }
 
+    private static dbHandler instance = null;
+
+
+    // makes sure only one instance of dbHandler is created
+    public static dbHandler getInstance(Context context) {
+        if (instance == null) {
+            instance = new dbHandler(context);
+        }
+        return instance;
+    }
+
     public App getApp() {
         return app;
     }

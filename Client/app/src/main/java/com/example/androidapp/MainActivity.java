@@ -26,9 +26,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        db = new dbHandler(getApplicationContext());
+        db = dbHandler.getInstance(getApplicationContext());
         app = db.getApp();
-
 
         // if user is not authed, send them to the starter page
         if (app.currentUser() == null) {
