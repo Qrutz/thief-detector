@@ -1,12 +1,12 @@
 #include "rpcWiFi.h"
 
-const char* ssid = "Molla"; //replace with your own wifi network to test
-const char* password =  "gatann12"; //and password :)
+const char* ssid = SSID; //replace with your own wifi network to test
+const char* password =  WIFI_PASSWORD; //and password :)
 
 
 class scanWifi{
 public: void setupScan() {
-    Serial.begin(115200);
+    
     while(!Serial); // Wait for Serial to be ready
 
     // Set WiFi to station mode and disconnect from an AP if it was previously connected
