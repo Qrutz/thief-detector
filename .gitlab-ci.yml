@@ -1,4 +1,4 @@
-image: openjdk:11
+image: adoptopenjdk:11-jdk-hotspot
 
 stages:
   - build
@@ -13,8 +13,8 @@ build:
     - cd Client
     - wget https://services.gradle.org/distributions/gradle-7.2-bin.zip
     - unzip -qq gradle-7.2-bin.zip
-    - export PATH=$PWD/gradle-7.2/bin:$PATH
-    - export JAVA_HOME=$(dirname $(dirname $(readlink -f $(which javac))))
+    - export GRADLE_HOME=$PWD/gradle-7.2
+    - export PATH=$GRADLE_HOME/bin:$PATH
     - chmod +x gradlew
     - ./gradlew assembleDebug
 
