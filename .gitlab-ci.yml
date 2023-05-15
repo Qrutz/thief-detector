@@ -23,5 +23,5 @@ build:
     - ./gradlew assembleDebug
   artifacts:
     paths:
-      cd Client
-      - app/build/outputs/
+
+      - Client/app/build/outputs/
