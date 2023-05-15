@@ -9,6 +9,8 @@ before_script:
   - wget -q "https://dl.google.com/android/repository/commandlinetools-linux-7583922_latest.zip" -O android-sdk.zip
   - unzip -q android-sdk.zip -d android-sdk
   - echo "y" | android-sdk/cmdline-tools/bin/sdkmanager --sdk_root=android-sdk "platform-tools" "platforms;android-30" > /dev/null
+  - export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+
 
 build:
   stage: build
