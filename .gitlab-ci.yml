@@ -4,12 +4,14 @@ stages:
   - build
 
 before_script:
+  - export JAVA_HOME=/usr/local/openjdk-11
+  - export PATH=$JAVA_HOME/bin:$PATH
   - sudo apt-get update -qq
   - sudo apt-get install -y --no-install-recommends wget tar unzip
   - wget -q "https://dl.google.com/android/repository/commandlinetools-linux-7583922_latest.zip" -O android-sdk.zip
   - unzip -q android-sdk.zip -d android-sdk
-  - echo "y" | android-sdk/cmdline-tools/bin/sdkmanager --sdk_root=android-sdk "platform-tools" "platforms;android-30" > /dev/null
-  - export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+  - echo "y" | sudo android-sdk/cmdline-tools/bin/sdkmanager --sdk_root=android-sdk "platform-tools" "platforms;android-30" > /dev/null
+
 
 
 build:
