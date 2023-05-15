@@ -7,6 +7,9 @@ stages:
 before_script:
   - apt-get update && apt-get install -y wget unzip
 
+variables:
+  JAVA_HOME: "/opt/java/openjdk"
+
 build:
   stage: build
   script:
@@ -16,10 +19,12 @@ build:
     - export GRADLE_HOME=$PWD/gradle-7.2
     - export PATH=$GRADLE_HOME/bin:$PATH
     - chmod +x gradlew
+    - export JAVA_HOME=$JAVA_HOME
     - ./gradlew assembleDebug
 
 test:
   stage: test
   script:
     - cd Client
+    - export JAVA_HOME=$JAVA_HOME
     - ./gradlew test
