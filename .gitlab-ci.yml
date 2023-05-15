@@ -8,7 +8,8 @@ before_script:
   - apt-get update && apt-get install -y wget unzip
 
 variables:
-  JAVA_HOME: "/opt/java/openjdk"
+  GRADLE_HOME: "$PWD/gradle-7.2"
+  JAVA_HOME: "/usr/lib/jvm/java-11-openjdk-amd64"
 
 build:
   stage: build
@@ -16,15 +17,16 @@ build:
     - cd Client
     - wget https://services.gradle.org/distributions/gradle-7.2-bin.zip
     - unzip -qq gradle-7.2-bin.zip
-    - export GRADLE_HOME=$PWD/gradle-7.2
     - export PATH=$GRADLE_HOME/bin:$PATH
     - chmod +x gradlew
-    - export JAVA_HOME=$JAVA_HOME
+    - wget https://download.java.net/openjdk/jdk11/ri/openjdk-11+28_linux-x64_bin.tar.gz
+    - tar xf openjdk-11+28_linux-x64_bin.tar.gz
+    - export JAVA_HOME=$PWD/jdk-11
     - ./gradlew assembleDebug
 
 test:
   stage: test
   script:
     - cd Client
-    - export JAVA_HOME=$JAVA_HOME
+    - export PATH=$JAVA_HOME/bin:$PATH
     - ./gradlew test
