@@ -10,6 +10,7 @@ before_script:
 build:
   stage: build
   script:
+    - cd Client
     - wget https://services.gradle.org/distributions/gradle-7.2-bin.zip
     - unzip -qq gradle-7.2-bin.zip
     - export PATH=$PWD/gradle-7.2/bin:$PATH
@@ -19,4 +20,5 @@ build:
 test:
   stage: test
   script:
+    - cd Client
     - ./gradlew test
