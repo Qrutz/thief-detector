@@ -28,11 +28,13 @@ stages:
 lintDebug:
   stage: build
   script:
+    - cd C:\Users\46733\Desktop\miniproject\thief-detector\Client
     - ./gradlew -Pci --console=plain :app:lintDebug -PbuildDir=lint
 
 assembleDebug:
   stage: build
   script:
+    - cd C:\Users\46733\Desktop\miniproject\thief-detector\Client
     - ./gradlew assembleDebug
   artifacts:
     paths:
@@ -41,6 +43,8 @@ assembleDebug:
 build-job:
   stage: build
   script:
+    - C:\Users\46733\Desktop\miniproject\thief-detector\Client
+    - gradlew build
     - echo "Hello, $GITLAB_USER_LOGIN!"
 
 test-job1:
