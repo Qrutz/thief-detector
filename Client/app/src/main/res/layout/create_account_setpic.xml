@@ -48,7 +48,7 @@
         app:layout_constraintVertical_bias="0.044" />
 
     <TextView
-            android:id="@+id/textView4"
+            android:id="@+id/skipButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Skip"
@@ -64,6 +64,7 @@
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:text="Continue"
+        android:backgroundTint="@color/fbblue"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.497"

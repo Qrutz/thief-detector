@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.util.Log;
 import android.widget.TextView;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
@@ -17,20 +16,23 @@ import com.example.androidapp.AlarmStatusActivity;
 
 import com.example.androidapp.AlarmViewModel;
 import com.example.androidapp.R;
-
+import com.example.androidapp.ViewModels.UserViewModel;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
+import java.util.Date;
+
 
 public class BrokerConnection extends AppCompatActivity {
 
     public static final String SUB_TOPIC = "/SeeedSentinel/AlarmOnOff";
-    private static final String MQTT_SERVER = "tcp://10.0.2.2:1883";
+    private static final String MQTT_SERVER = "tcp://broker.hivemq.com:1883";
     public static final String CLIENT_ID = "SeeedSentinel";
     public static final int QOS = 1;
+    private static final String CHANNEL_ID = "AlarmStatus";
 
     private boolean isConnected = false;
     private MqttClient mqttClient;
@@ -39,6 +41,7 @@ public class BrokerConnection extends AppCompatActivity {
 
     // view model that handles the alarm status state
     AlarmViewModel alarmViewModel = new AlarmViewModel();
+
 
     public BrokerConnection(Context context) {
         // use singleton pattern to ensure only one instance of mqtt client
@@ -105,6 +108,7 @@ public class BrokerConnection extends AppCompatActivity {
                             alarmViewModel.setAlarmStatus("AlarmOn");
                         } else if (mqttMessage.equals("AlarmIntruder")) {
                             alarmViewModel.setAlarmStatus("AlarmIntruder");
+                            UserViewModel.createBreakin("Hallway", new Date());
                             Intent intent = new Intent(context, AlarmStatusActivity.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE);
@@ -123,7 +127,8 @@ public class BrokerConnection extends AppCompatActivity {
                             }
                             notificationManager.notify(10, builder.build());
                         }
-                    } else {
+                    }
+                    else {
                         Log.i("BROKER: ", "[MQTT] Topic: " + topic + " | Message: " + message.toString());
                     }
                 }
@@ -148,13 +153,13 @@ public class BrokerConnection extends AppCompatActivity {
      * @param message - the message that we send to the broker
      * @param actionDescription - the action description that will be printed
      */
-    public void publishMqttMessage(String message, String actionDescription) {
+    public void publishMqttMessage(String topic, String message, String actionDescription) {
         if (!isConnected) {
             final String notConnected = "Not connected (yet)";
             Log.e(CLIENT_ID, notConnected);
             return;
         }
-        mqttClient.publish(SUB_TOPIC, message, 1, new IMqttActionListener() {
+        mqttClient.publish(topic, message, 1, new IMqttActionListener() {
             @Override
             public void onSuccess(IMqttToken asyncActionToken) {
                 System.out.println("Successfully sent");
@@ -195,4 +200,6 @@ public class BrokerConnection extends AppCompatActivity {
         }
         notificationManager.notify(10, builder.build());
     }
+
+
 }

@@ -14,16 +14,17 @@ import java.util.Date;
 public class UserViewModel extends ViewModel{
 
     private static MutableLiveData<UserModel> _user = new MutableLiveData<>();
-    private dbHandler db;
+    private static dbHandler db;
 
 
     public UserViewModel(dbHandler db) {
-        this.db = db;
+        UserViewModel.db = db;
         User currentUser = db.getCurrentUser();
         if (currentUser != null) {
             _user.setValue(db.getUserData());
         }
     }
+
 
     public LiveData<UserModel> getUser() {
         // if null, throw error
@@ -60,6 +61,7 @@ public class UserViewModel extends ViewModel{
         db.updatePasscode(passcode, new UpdateUserDataCallback() {
             @Override
             public void onSuccess() {
+
                 Log.v("AUTH", "Successfully updated passcode.");
                 UserModel userModel = db.getUserData();
                 userModel.setPasscode(passcode);
@@ -74,7 +76,7 @@ public class UserViewModel extends ViewModel{
     }
 
     //add breakin to the array of breakins
-    public void createBreakin(String location, Date date) {
+    public static void createBreakin(String location, Date date) {
         db.createBreakInAlert(location, date, new UpdateUserDataCallback() {
             @Override
             public void onSuccess() {
@@ -90,6 +92,8 @@ public class UserViewModel extends ViewModel{
             }
         });
     }
+
+
 
     // modify the profile picture of the user
     public void editProfilePicture(String profilePicture) {
