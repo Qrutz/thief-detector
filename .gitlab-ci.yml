@@ -6,7 +6,7 @@ stages:
 before_script:
   - export JAVA_HOME=/usr/local/openjdk-11
   - export PATH=$JAVA_HOME/bin:$PATH
-  - sudo apt-get update -qq
+  - sudo apt-get update
   - sudo apt-get install -y --no-install-recommends wget tar unzip
   - wget -q "https://dl.google.com/android/repository/commandlinetools-linux-7583922_latest.zip" -O android-sdk.zip
   - unzip -q android-sdk.zip -d android-sdk
