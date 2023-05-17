@@ -8,6 +8,9 @@ apply plugin: 'realm-android'
 android {
     namespace 'com.example.androidapp'
     compileSdk 33
+    lintOptions {
+        baseline file("lint-baseline.xml")
+    }
 
     defaultConfig {
         applicationId "com.example.androidapp"

@@ -12,12 +12,11 @@ before_script:
   - unzip -q android-sdk.zip -d android-sdk
   - echo "y" | sudo android-sdk/cmdline-tools/bin/sdkmanager --sdk_root=android-sdk "platform-tools" "platforms;android-30" > /dev/null
 
-
-
 build:
   stage: build
   script:
     - cd Client
+    - gradlew build
     - export ANDROID_HOME=/android-sdk
     - export PATH=$PATH:$ANDROID_HOME/emulator
     - export PATH=$PATH:$ANDROID_HOME/tools
