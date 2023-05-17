@@ -40,7 +40,7 @@ assembleDebug:
     paths:
       - app/build/outputs/
 
-build-job:
+build:
   stage: build
   script:
     - C:\Users\46733\Desktop\miniproject\thief-detector\Client
