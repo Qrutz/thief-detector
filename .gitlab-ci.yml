@@ -21,22 +21,22 @@ before_script:
   - yes | android-sdk-linux/tools/bin/sdkmanager --licenses
   - set -o pipefail
 
-  stages:
-    -build
-    -test
+ stages:
+ -build
+ -test
 
 lintDebug:
   stage: build
   script:
     - ./gradlew -Pci --console=plain :app:lintDebug -PbuildDir=lint
 
-    assembleDebug:
-      stage: build
-      script:
-        - ./gradlew assembleDebug
-      artifacts:
-        paths:
-          - app/build/outputs/
+assembleDebug:
+  stage: build
+  script:
+    - ./gradlew assembleDebug
+  artifacts:
+    paths:
+      - app/build/outputs/
 
 build-job:
   stage: build
