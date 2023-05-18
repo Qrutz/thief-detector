@@ -1,21 +1,19 @@
-# This is a basic GitLab CI configuration for an Android Studio project.
-
-# Specify the image to use for the build environment.
 image: openjdk:11
 
-# Define the stages of the CI pipeline.
 stages:
   - build
   - test
 
-# Define job definitions for each stage.
+variables:
+  GRADLE_USER_HOME: "/usr/local/gradle"
+
 build:
   stage: build
   before_script:
     - apt-get update && apt-get install -y wget unzip
     - wget https://services.gradle.org/distributions/gradle-6.8.3-bin.zip
-    - unzip -d /opt/gradle gradle-6.8.3-bin.zip
-    - export GRADLE_HOME=/opt/gradle/gradle-6.8.3
+    - unzip -d /usr/local/gradle gradle-6.8.3-bin.zip
+    - export GRADLE_HOME=/usr/local/gradle/gradle-6.8.3
     - export PATH=$PATH:$GRADLE_HOME/bin
   script:
     - chmod +x ./gradlew
@@ -27,4 +25,3 @@ test:
     - cd Client
     - chmod +x ./gradlew
     - ./gradlew testDebug
-
