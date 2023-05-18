@@ -6,7 +6,6 @@ stages:
 
 variables:
   GRADLE_USER_HOME: "$CI_PROJECT_DIR/gradle"
-  JAVA_HOME: "/usr/local/openjdk-11"
 
 before_script:
   - apt-get update && apt-get install -y wget unzip
@@ -17,6 +16,7 @@ build:
   stage: build
   script:
     - cd Client
+    - export JAVA_HOME=/usr/local/openjdk-11
     - chmod +x ./gradlew
     - ./gradlew assembleDebug
 
@@ -24,5 +24,6 @@ test:
   stage: test
   script:
     - cd Client
+    - export JAVA_HOME=/usr/local/openjdk-11
     - chmod +x ../gradlew
     - ../gradlew testDebug
