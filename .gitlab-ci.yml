@@ -14,7 +14,7 @@ build:
   stage: build
   script:
     - cd Client
-    - export JAVA_HOME=/usr/local/openjdk-11
+
     - chmod +x ./gradlew
     - ./gradlew assembleDebug
 
@@ -22,6 +22,6 @@ test:
   stage: test
   script:
     - cd Client
-    - export JAVA_HOME=/usr/local/openjdk-11
+
     - chmod +x ../gradlew
     - ../gradlew testDebug
