@@ -16,7 +16,7 @@ build:
     - cd Client
     - curl -s "https://get.sdkman.io" | bash
     - source "$HOME/.sdkman/bin/sdkman-init.sh"
-    - sdk list java
+    - sdk install java
     - java -version
     - chmod +x ./gradlew
     - ./gradlew assembleDebug
@@ -27,7 +27,7 @@ test:
     - cd Client
     - curl -s "https://get.sdkman.io" | bash
     - source "$HOME/.sdkman/bin/sdkman-init.sh"
-    - sdk list java
+    - sdk install java
     - java -version
     - chmod +x ../gradlew
     - ../gradlew testDebug
