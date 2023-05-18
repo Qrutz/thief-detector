@@ -1,74 +1,30 @@
-image: openjdk:11-jdk
+# This is a basic GitLab CI configuration for an Android Studio project.
 
-variables:
-  ANDROID_COMPILE_SDK: "33"
-  ANDROID_BUILD_TOOLS: "11.0.15"
-  ANDROID_SDK_TOOLS:   "4333796"
+# Specify the image to use for the build environment.
+image: openjdk:11
 
-before_script:
-  - sudo apt-get --quiet update --yes apt-get --quiet update --yes
-  - sudo apt-get --quiet install --yes wget tar unzip lib32stdc++6 lib32z1
-  - wget --quiet --output-document=android-sdk.zip https://dl.google.com/android/repository/sdk-tools-linux-${ANDROID_SDK_TOOLS}.zip
-  - unzip -d android-sdk-linux android-sdk.zip
-  - echo y | android-sdk-linux/tools/bin/sdkmanager "platforms;android-${ANDROID_COMPILE_SDK}" >/dev/null
-  - echo y | android-sdk-linux/tools/bin/sdkmanager "platform-tools" >/dev/null
-  - echo y | android-sdk-linux/tools/bin/sdkmanager "build-tools;${ANDROID_BUILD_TOOLS}" >/dev/null
-  - export ANDROID_HOME=$PWD/android-sdk-linux
-  - sudo export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64/
-  - chmod +x ./gradlew
-  - set +o pipefail
-  - yes | android-sdk-linux/tools/bin/sdkmanager --licenses
-  - set -o pipefail
-
+# Define the stages of the CI pipeline.
 stages:
-  - lint
   - build
   - test
 
-Client_Checkstyle:
- stage: lint
- script:
-   - mvn checkstyle:checkstyle
-   - cat checkstyle-result.xml
- allow_failure: false
-
-lintDebug:
-  stage: build
-  script:
-    - cd Client
-    - ./gradlew -Pci --console=plain :app:lintDebug -PbuildDir=lint
-
-assembleDebug:
-  stage: build
-  script:
-    - cd Client
-    - ./gradlew assembleDebug
-  artifacts:
-    paths:
-      - app/build/outputs/
-
+# Define job definitions for each stage.
 build:
   stage: build
+  before_script:
+    - apt-get update && apt-get install -y wget unzip
+    - wget https://services.gradle.org/distributions/gradle-6.8.3-bin.zip
+    - unzip -d /opt/gradle gradle-6.8.3-bin.zip
+    - export GRADLE_HOME=/opt/gradle/gradle-6.8.3
+    - export PATH=$PATH:$GRADLE_HOME/bin
   script:
-    - Client
-    - gradlew build
-    - echo "Hello, $GITLAB_USER_LOGIN!"
+    - chmod +x ./gradlew
+    - ./gradlew assembleDebug
 
-test-job1:
+test:
   stage: test
   script:
-    - echo "This job tests something"
+    - cd Client
+    - chmod +x ./gradlew
+    - ./gradlew testDebug
 
-test-job2:
-  stage: test
-  script:
-    - echo "This job tests something, but takes more time than test-job1."
-    - echo "After the echo commands complete, it runs the sleep command for 20 seconds"
-    - echo "which simulates a test that runs 20 seconds longer than test-job1"
-    - sleep 20
-
-deploy-prod:
-  stage: test
-  script:
-    - echo "This job deploys something from the $CI_COMMIT_BRANCH branch."
-  environment: production
