@@ -1,40 +1,22 @@
-image: openjdk:11
+image: jangrewe/gitlab-ci-android
 
 stages:
-  - build
-  - test
-
-variables:
-  GRADLE_USER_HOME: "$CI_PROJECT_DIR/gradle"
-  ANDROID_COMPILE_SDK: "30"
-  ANDROID_BUILD_TOOLS: "30.0.3"
-  ANDROID_HOME: "/opt/android-sdk"
+- build
 
 before_script:
-  - apt-get update && apt-get install -y curl unzip
+- export GRADLE_USER_HOME=$(pwd)/.gradle
+- chmod +x ./gradlew
+
+cache:
+  key: ${CI_PROJECT_ID}
+  paths:
+  - .gradle/
 
 build:
   stage: build
   script:
-    - cd Client
-    - curl -s "https://get.sdkman.io" | bash
-    - source "$HOME/.sdkman/bin/sdkman-init.sh"
-    - sdk install java
-    - export JAVA_HOME="$HOME/.sdkman/candidates/java/current"
-    - java -version
-    - echo "sdk.dir=$ANDROID_HOME" > local.properties
-    - chmod +x ./gradlew
-    - ./gradlew assembleDebug
-
-test:
-  stage: test
-  script:
-    - cd Client
-    - curl -s "https://get.sdkman.io" | bash
-    - source "$HOME/.sdkman/bin/sdkman-init.sh"
-    - sdk install java
-    - export JAVA_HOME="$HOME/.sdkman/candidates/java/current"
-    - java -version
-    - echo "sdk.dir=$ANDROID_HOME" > local.properties
-    - chmod +x ../gradlew
-    - ../gradlew testDebug
+  - cd Client
+  - ./gradlew assembleDebug
+  artifacts:
+    paths:
+    - app/build/outputs/apk/app-debug.apk
