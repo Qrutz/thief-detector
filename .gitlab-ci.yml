@@ -14,7 +14,7 @@ build:
   stage: build
   script:
     - cd Client
-
+    - readlink -f $(which java)
     - chmod +x ./gradlew
     - ./gradlew assembleDebug
 
