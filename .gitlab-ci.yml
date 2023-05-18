@@ -1,4 +1,4 @@
-image: openjdk:11
+image: adoptopenjdk:11-jdk-hotspot
 
 stages:
   - build
@@ -14,8 +14,6 @@ build:
   stage: build
   script:
     - cd Client
-    - export JAVA_HOME=/usr/local/openjdk-11
-    - export PATH=$PATH:$JAVA_HOME/bin
     - java -version
     - chmod +x ./gradlew
     - ./gradlew assembleDebug
@@ -24,8 +22,6 @@ test:
   stage: test
   script:
     - cd Client
-    - export JAVA_HOME=/usr/local/openjdk-11
-    - export PATH=$PATH:$JAVA_HOME/bin
     - java -version
     - chmod +x ../gradlew
     - ../gradlew testDebug
