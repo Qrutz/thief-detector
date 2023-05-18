@@ -1,4 +1,4 @@
-image: adoptopenjdk:11-jdk-hotspot
+image: openjdk:11
 
 stages:
   - build
@@ -8,12 +8,15 @@ variables:
   GRADLE_USER_HOME: "$CI_PROJECT_DIR/gradle"
 
 before_script:
-  - apt-get update && apt-get install -y wget unzip
+  - apt-get update && apt-get install -y curl unzip
 
 build:
   stage: build
   script:
     - cd Client
+    - curl -s "https://get.sdkman.io" | bash
+    - source "$HOME/.sdkman/bin/sdkman-init.sh"
+    - sdk install java 11.0.12.hs-adpt
     - java -version
     - chmod +x ./gradlew
     - ./gradlew assembleDebug
@@ -22,6 +25,9 @@ test:
   stage: test
   script:
     - cd Client
+    - curl -s "https://get.sdkman.io" | bash
+    - source "$HOME/.sdkman/bin/sdkman-init.sh"
+    - sdk install java 11.0.12.hs-adpt
     - java -version
     - chmod +x ../gradlew
     - ../gradlew testDebug
