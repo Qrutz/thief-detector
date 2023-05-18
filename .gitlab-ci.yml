@@ -1,4 +1,4 @@
-image: openjdk:11-jdk
+image: openjdk:11
 
 stages:
   - build
@@ -17,8 +17,12 @@ build:
   stage: build
   script:
     - cd Client
-    - echo "sdk.dir=$ANDROID_HOME" > local.properties
+    - curl -s "https://get.sdkman.io" | bash
+    - source "$HOME/.sdkman/bin/sdkman-init.sh"
+    - sdk install java
+    - export JAVA_HOME="$HOME/.sdkman/candidates/java/current"
     - java -version
+    - echo "sdk.dir=$ANDROID_HOME" > local.properties
     - chmod +x ./gradlew
     - ./gradlew assembleDebug
 
@@ -26,7 +30,11 @@ test:
   stage: test
   script:
     - cd Client
-    - echo "sdk.dir=$ANDROID_HOME" > local.properties
+    - curl -s "https://get.sdkman.io" | bash
+    - source "$HOME/.sdkman/bin/sdkman-init.sh"
+    - sdk install java
+    - export JAVA_HOME="$HOME/.sdkman/candidates/java/current"
     - java -version
+    - echo "sdk.dir=$ANDROID_HOME" > local.properties
     - chmod +x ../gradlew
     - ../gradlew testDebug
