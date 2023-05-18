@@ -16,7 +16,6 @@ before_script:
   - source "$HOME/.sdkman/bin/sdkman-init.sh"
   - sdk install java
   - java -version
-  - yes | sdkmanager "platforms;android-$ANDROID_COMPILE_SDK" "build-tools;$ANDROID_BUILD_TOOLS"
 
 build:
   stage: build
@@ -24,6 +23,10 @@ build:
     - cd Client
     - export ANDROID_HOME=$ANDROID_SDK_ROOT
     - echo "sdk.dir=$ANDROID_SDK_ROOT" > local.properties
+    - curl -s "https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip" -o sdk-tools.zip
+    - unzip -q sdk-tools.zip -d android-sdk
+    - export PATH=$PATH:$ANDROID_SDK_ROOT/tools/bin
+    - yes | sdkmanager --sdk_root=$ANDROID_SDK_ROOT "platforms;android-$ANDROID_COMPILE_SDK" "build-tools;$ANDROID_BUILD_TOOLS"
     - chmod +x ./gradlew
     - ./gradlew assembleDebug
 
@@ -33,5 +36,7 @@ test:
     - cd Client
     - export ANDROID_HOME=$ANDROID_SDK_ROOT
     - echo "sdk.dir=$ANDROID_SDK_ROOT" > local.properties
+    - export PATH=$PATH:$ANDROID_SDK_ROOT/tools/bin
+    - yes | sdkmanager --sdk_root=$ANDROID_SDK_ROOT "platforms;android-$ANDROID_COMPILE_SDK" "build-tools;$ANDROID_BUILD_TOOLS"
     - chmod +x ../gradlew
     - ../gradlew testDebug
