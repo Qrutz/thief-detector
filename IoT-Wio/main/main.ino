@@ -8,7 +8,7 @@
 
 // Pins for sensors
 #define PIR_MOTION_SENSOR D0 // Motion sensor pin
-#define BUZZER D4 
+//#define BUZZER D4 
 #define SOUND_SENSOR D2
 
 // WIFI Credentials
@@ -183,7 +183,8 @@ void setup()
 
   // PINS
   pinMode(PIR_MOTION_SENSOR, INPUT);
-  pinMode(BUZZER, INPUT);
+  //pinMode(BUZZER, INPUT);
+  pinMode(WIO_BUZZER, OUTPUT);//setting up the internal buzzer of the wio (which is build in buzzer pin)
   pinMode(SOUND_SENSOR, INPUT);
   pinMode(WIO_5S_UP, INPUT_PULLUP);
   pinMode(WIO_5S_DOWN, INPUT_PULLUP);
@@ -406,9 +407,12 @@ void loop()
         client.publish(AlarmTopic, "AlarmIntruder");
         sentPub = true;
       }
-      digitalWrite(BUZZER, HIGH);
+      //digitalWrite(BUZZER, HIGH);
+     // delay(50);
+      //digitalWrite(BUZZER, LOW);
+      analogWrite(WIO_BUZZER, 180); 
       delay(50);
-      digitalWrite(BUZZER, LOW);
+      analogWrite(WIO_BUZZER, 0);
       timerStart = 0;
     }
   }
